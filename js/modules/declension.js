@@ -12,7 +12,7 @@ const getDeclensionOfDay = (number) => {
         return 'дня';
       }
   return 'дней';
-}
+};
 
 const getDeclensionOfHours = (number) => {
   const lastDigit = number % 10;
@@ -27,7 +27,7 @@ const getDeclensionOfHours = (number) => {
         return 'часа';
       }
   return 'часов';
-}
+};
 
 const getDeclensionMinutes = (number) => {
   const lastDigit = number % 10;
@@ -38,10 +38,24 @@ const getDeclensionMinutes = (number) => {
     return 'минуты';
   }
   return 'минут';
-}
+};
 
-export {
+const getDeclensionSeconds = (number) => {
+  const lastDigit = number % 10;
+  const lastTwoDigits = number % 100;
+  if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
+    return 'секунд';
+  } else if (lastDigit === 1) {
+    return 'секунда';
+  } else if (lastDigit >= 2 && lastDigit <= 4) {
+    return 'секунды';
+  }
+  return 'секунд';
+};
+
+export default {
   getDeclensionOfDay,
   getDeclensionOfHours,
-  getDeclensionMinutes
+  getDeclensionMinutes,
+  getDeclensionSeconds,
 }

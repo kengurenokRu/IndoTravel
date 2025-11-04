@@ -1,7 +1,9 @@
 import {controlTimer} from './modules/timer.js';
 
-const timer = () => {
-  const deadline = document.querySelector('.timer').dataset.deadline;
+{
+const init = () => {
+  const timer = document.querySelector('.timer');
+  const deadline = timer.dataset.deadline;
   const timerCountDays = document.querySelector('.timer__count_days');
   const timerUnitsDays = document.querySelector('.timer__units_days');
   const timerCountHours = document.querySelector('.timer__count_hours');
@@ -11,7 +13,7 @@ const timer = () => {
   const heroText = document.querySelector('.hero__text');
   const heroTimer = document.querySelector('.hero__timer');
 
-  controlTimer(deadline, 
+  controlTimer(deadline, timer,
     timerCountDays, 
     timerUnitsDays, 
     timerCountHours, 
@@ -19,7 +21,8 @@ const timer = () => {
     timerCountMinutes, 
     timerUnitsMinutes, 
     heroText, 
-    heroTimer);
+    heroTimer);    
 }
 
-timer();
+window.timer = init;
+}
