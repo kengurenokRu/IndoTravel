@@ -1,12 +1,24 @@
 import declension from './declension.js';
+import {createTimerBlock} from './createElements.js';
+
 const { getDeclensionOfDay, getDeclensionOfHours, getDeclensionMinutes, getDeclensionSeconds } = declension;
+
+export const plagins = () => {
+  const dataTimerDeadline = document.querySelector('[data-deadline]');
+  if (dataTimerDeadline !== null) {
+    createTimerBlock(dataTimerDeadline);
+    return true;
+  }
+  return false;
+}
 
 export const controlTimer = (deadline, timer,
   timerCountDays, timerUnitsDays,
   timerCountHours, timerUnitsHours,
   timerCountMinutes, timerUnitsMinutes,
   heroText, heroTimer) => {
-  console.log('11111');
+  
+  
 
   const getTime = () => {
     const dateNow = Date.now();
