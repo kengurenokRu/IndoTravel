@@ -31,8 +31,6 @@ else if ((scroll - scrollY > 0) && (wheel !== -1))
 scroll = scrollY;
 });
 
-
-
 document.body.append(fly);
 
 const calcPositionFly = () => {
@@ -41,7 +39,6 @@ const maxScroll = docEl.scrollHeight - docEl.clientHeight;
 const percentScroll = (window.scrollY * 100) / maxScroll;
 const height = maxHeight * (percentScroll / 100);
 fly.style.transform = `translateY(${-height}px)${transform}`;
-console.log(fly.style.transform);
 };
 
 window.addEventListener('scroll', calcPositionFly);
