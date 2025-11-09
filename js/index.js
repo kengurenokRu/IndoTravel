@@ -1,7 +1,8 @@
 import { controlTimer, plagins } from './modules/timer.js';
+import { renderData, renderControl } from './modules/dataControl.js';
 
 {
-  const init = () => {
+    const init = () => {  
     if (plagins()) {
       const timer = document.querySelector('.timer');
       const deadline = timer.dataset.deadline;
@@ -23,8 +24,10 @@ import { controlTimer, plagins } from './modules/timer.js';
         timerUnitsMinutes,
         heroText,
         heroTimer);
-    }
+    };
+    
   }
-
+  renderData();
+  renderControl();
   window.timer = init;
 }

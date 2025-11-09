@@ -11,6 +11,15 @@ const createParagraph = (textContent, classList) => {
   return p;
 }
 
+export const createOption = (value, textContent, classList) => {
+  const option = document.createElement('option');
+  option.classList = classList;
+  option.value = value;
+  option.textContent = textContent;
+  return option;
+}
+
+
 export const createTimerBlock = (container) => {
   const title = createParagraph('До конца акции осталось:', 'timer__title');
   const timerItemDays = createParagraph('', 'timer__item timer__item_days');
@@ -28,3 +37,4 @@ export const createTimerBlock = (container) => {
   container.prepend(title, timerItemDays, timerItemHours, timerItemMinutes);
   container.classList.add('timer');
 }
+
