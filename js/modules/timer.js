@@ -1,7 +1,7 @@
 import declension from './declension.js';
 import {createTimerBlock} from './createElements.js';
 
-const { getDeclensionOfDay, getDeclensionOfHours, getDeclensionMinutes, getDeclensionSeconds } = declension;
+const { getDeclension } = declension;
 
 export const plagins = () => {
   const dataTimerDeadline = document.querySelector('[data-deadline]');
@@ -46,22 +46,22 @@ export const controlTimer = (deadline, timer,
           timer.classList.add('timer_red');
         }
         timerCountDays.textContent = time.hours.toString().padStart(2, '0');
-        timerUnitsDays.textContent = getDeclensionOfHours(time.hours);
+        timerUnitsDays.textContent = getDeclension(time.hours, ['час', 'часа', 'часов']);
         timerCountHours.textContent = time.minutes.toString().padStart(2, '0');
-        timerUnitsHours.textContent = getDeclensionMinutes(time.minutes);
+        timerUnitsHours.textContent = getDeclension(time.minutes, ['минута', 'минуты', 'минут']);
         timerCountMinutes.textContent = time.seconds.toString().padStart(2, '0');
-        timerUnitsMinutes.textContent = getDeclensionSeconds(time.seconds);
+        timerUnitsMinutes.textContent = getDeclension(time.seconds, ['секунда', 'секунды', 'секунд']); 
       } else {
         if (!timer.classList.contains('timer_green')) {
           timer.classList.remove('timer_red');
           timer.classList.add('timer_green');
         }
         timerCountDays.textContent = time.days;
-        timerUnitsDays.textContent = getDeclensionOfDay(time.days);
+        timerUnitsDays.textContent = getDeclension(time.days, ['день', 'дня', 'дней']); 
         timerCountHours.textContent = time.hours.toString().padStart(2, '0');
-        timerUnitsHours.textContent = getDeclensionOfHours(time.hours);
+        timerUnitsHours.textContent = getDeclension(time.hours, ['час', 'часа', 'часов']);
         timerCountMinutes.textContent = time.minutes.toString().padStart(2, '0');
-        timerUnitsMinutes.textContent = getDeclensionMinutes(time.minutes);
+        timerUnitsMinutes.textContent = getDeclension(time.minutes, ['минута', 'минуты', 'минут']);
       }
   };
 
