@@ -231,7 +231,7 @@
     </section>
     <section class="section reservation" id="reservation">
       <div class="container reservation__container">
-        <form action="#" class="reservation__form">
+        <form method = "post" class="reservation__form" >
           <h2 class="reservation__title">Бронирование тура</h2>
           <div class="reservation__inputs">
             <div class="reservation__selects">
@@ -250,11 +250,11 @@
           <div class="reservation__contacts">
             <div class="reservation__input-wrap">
               <label for="reservation__name" class="reservation__label">ФИО</label>
-              <input required type="text" class="reservation__input reservation__input_name" id="reservation__name" placeholder="Введите ваше ФИО">
+              <input required type="text" name = "name" class="reservation__input reservation__input_name" id="reservation__name" placeholder="Введите ваше ФИО">
             </div>
             <div class="reservation__input-wrap">
               <label for="reservation__phone" class="reservation__label">Телефон</label>
-              <input required type="text" class="reservation__input" id="reservation__phone" placeholder="Введите номер телефона">
+              <input required type="text" name = "phone" class="reservation__input" id="reservation__phone" placeholder="Введите номер телефона">
             </div>
           </div>
           <div class="reservation__bottom">
@@ -262,7 +262,7 @@
               <p class="reservation__data"></p>
               <p class="reservation__price"></p>
             </div>
-            <button class="button reservation__button">Забронировать</button>
+            <button type = "submit" class="button reservation__button">Забронировать</button>
           </div>
         </form>
       </div>
@@ -306,11 +306,11 @@
               <a href="#" class="footer__socials-link footer__socials-link_tg" aria-label="ссылка на telegram"></a></li>
           </ul>
         </div>
-        <form action="#" class="footer__form">
+        <form action="#" methed = "post" class="footer__form">
           <h2 class="footer__title footer__form-title">Есть вопросы по туру?</h2>
           <p class="footer__text">Введите свой Email и мы свяжемся с вами в течении 3 рабочих дней</p>
           <div class="footer__input-wrap">
-            <input required type="text" class="footer__input" placeholder="Введите адрес электронной почты">
+            <input required name = "footerPhone" type="text" class="footer__input" placeholder="Введите адрес электронной почты">
             <button type="submit" class="button footer__button" aria-label="Кнопка отправки данных формы"></button>
           </div>
         </form>

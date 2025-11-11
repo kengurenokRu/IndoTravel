@@ -18,13 +18,11 @@ fly.style.cssText = `
 window.addEventListener('scroll', (e) =>{ 
 if ((scroll - scrollY  <= 0) && (wheel !== 1))
 {
-  console.log('вниз'); 
   transform = '';
   wheel = 1;
 }
 else if ((scroll - scrollY > 0) && (wheel !== -1))
 {
-  console.log('вверх'); 
   transform = 'rotate(180deg)';
   wheel = -1;
 }
