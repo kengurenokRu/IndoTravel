@@ -9,6 +9,29 @@ const selectPeople = document.querySelectorAll('[name="people"]');
 const form = document.querySelector('.reservation__form');
 const footerForm = document.querySelector('.footer__form');
 
+const httpRequest = (URL, { methed = 'GET', callback, body = {}, headers }) => {
+  const xhr = new XMLHttpRequest();
+  xhr.open(methed, URL);
+console.log(methed);
+  if (headers) {
+    for (const [key, value] of Object.entries(headers)) {
+      xhr.setRequestHeader(key, value);
+    } 
+  }
+
+  xhr.addEventListener('load', () => {
+    const data = JSON.parse(xhr.response);
+    if (callback) callback(data);
+  });
+  xhr.addEventListener('error', () => {
+    console.log('error');
+  });
+  console.log(body);
+
+  xhr.send(JSON.stringify(body));
+};
+
+
 const loadData = async () => {
   const res = await fetch('./dates/date.json');
   const data = await res.json();
@@ -88,7 +111,7 @@ export const renderControl = async () => {
       if (e.target.classList.contains('reservation__select')) {
         const reservationDataText = document.querySelector('.reservation__data');
         const reservationPriceText = document.querySelector('.reservation__price');
-        const temp = reservationDate.value.split(' - ');        
+        const temp = reservationDate.value.split(' - ');
         data.map(item => {
           if (item.date === reservationDate.value) {
             reservationDataText.textContent = `${getDataStr(temp[0])} - ${getDataStr(temp[1])}, 
@@ -101,39 +124,52 @@ export const renderControl = async () => {
     });
   });
 
-  
-  
+
+
   form.addEventListener("submit", (e) => {
-    e.preventDefault();    
-    sendData({
+    e.preventDefault();
+    httpRequest('https://jsonplaceholder.typicode.com/posts', {
+      methed: 'post',
+      body: {
+        date: form.dates.value,
+        people: form.people.value,
+        name: form.name.value,
+        phone: form.phone.value,
+      },
+      callback(data) {
+        form.textContent = `Заявка принята. Номер заявки ${data.id}`;
+      },
+      headers: {'Content-Type': 'application/json'},
+    });
+    /*sendData({
       date: form.dates.value,
       people: form.people.value,
       name: form.name.value,
       phone: form.phone.value,
     }, (data) => {
       form.textContent = `Заявка принята. Номер заявки ${data.id}`;
-    });
-    e.target.reset();   
+    });*/
+    e.target.reset();
   });
 
   footerForm.addEventListener("submit", (e) => {
-    e.preventDefault();     
+    e.preventDefault();
     sendData({
       title: 'Заявка',
-      phone: footerForm.footerPhone.value,      
+      phone: footerForm.footerPhone.value,
     }, (data) => {
       const footerFormTitle = document.querySelector('.footer__form-title');
       footerFormTitle.textContent = 'Ваша заявка успешно отправлена';
       const footerText = document.querySelector('.footer__text');
       footerText.textContent = 'Ваша заявка успешно отправлена';
       footerText.style.border = '3px solid red';
-      footerText.style.paddingLeft = '20px'; 
+      footerText.style.paddingLeft = '20px';
       footerText.style.paddingRight = '20px';
-      footerText.style.paddingTop = '10px'; 
+      footerText.style.paddingTop = '10px';
       footerText.style.paddingBottom = '10px';
       document.querySelector('.footer__input-wrap').remove();
     });
-    e.target.reset();   
+    e.target.reset();
   });
 
 }
