@@ -9,30 +9,46 @@ const selectPeople = document.querySelectorAll('[name="people"]');
 const form = document.querySelector('.reservation__form');
 const footerForm = document.querySelector('.footer__form');
 
-const httpRequest = (URL, { methed = 'GET', callback, body = {}, headers }) => {
+const httpRequest = (URL, { method = 'GET', callback, body = {}, headers }) => {
   try {
     const xhr = new XMLHttpRequest();
-    xhr.open(methed, URL);
+    xhr.open(method, URL);
     if (headers) {
       for (const [key, value] of Object.entries(headers)) {
         xhr.setRequestHeader(key, value);
       }
     }
-
     xhr.addEventListener('load', () => {
       if (xhr.status < 200 || xhr.status >= 300) {
         callback(new Error(xhr.status), xhr.response);
         return;
       }
       const data = JSON.parse(xhr.response);
-      if (callback) callback(data);
+      if (callback) callback(null, data);
     });
     xhr.addEventListener('error', () => {
       callback(new Error(xhr.status), xhr.response);
     });
-    console.log(body);
-
     xhr.send(JSON.stringify(body));
+  }
+  catch (err) {
+    callback(new Error(err));
+  }
+};
+
+const fetchRequest = async (url, { method = 'GET', callback, body, headers }) => {
+  try {    
+    const options = {method, };
+    if (body) options.body = JSON.stringify(body);    
+    if (headers) options.headers = headers;
+    console.log(options);
+    const response = await fetch(url, options);
+    if (response.ok) {
+      const data = await response.json();
+      if (callback) callback(null, data);
+      return;
+    }
+    throw new Error(response.status);
   }
   catch (err) {
     callback(new Error(err));
@@ -45,23 +61,6 @@ const loadData = async () => {
   const data = await res.json();
   return data;
 }
-
-const sendData = (body, cb) => {
-  const xhr = new XMLHttpRequest();
-  xhr.open('POST', 'https://jsonplaceholder.typicode.com/posts');
-  xhr.setRequestHeader('Content-Type', 'application/json');
-  xhr.addEventListener('load', () => {
-    const data = JSON.parse(xhr.response);
-    cb(data);
-  });
-  xhr.addEventListener('error', () => {
-    console.log('error');
-  });
-  console.log(body);
-  xhr.send(JSON.stringify(body));
-}
-
-
 
 const renderOptions = async (el, classList, textContent) => {
   const data = await loadData();
@@ -136,8 +135,8 @@ export const renderControl = async () => {
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-    httpRequest('https://jsonplaceholder.typicode.com/posts', {
-      methed: 'post',
+    fetchRequest('https://jsonplaceholder.typicode.com/posts', {
+      method: 'post',
       body: {
         date: form.dates.value,
         people: form.people.value,
@@ -154,33 +153,34 @@ export const renderControl = async () => {
       },
       headers: { 'Content-Type': 'application/json' },
     });
-    /*sendData({
-      date: form.dates.value,
-      people: form.people.value,
-      name: form.name.value,
-      phone: form.phone.value,
-    }, (data) => {
-      form.textContent = `Заявка принята. Номер заявки ${data.id}`;
-    });*/
     e.target.reset();
   });
 
   footerForm.addEventListener("submit", (e) => {
     e.preventDefault();
-    sendData({
-      title: 'Заявка',
-      phone: footerForm.footerPhone.value,
-    }, (data) => {
-      const footerFormTitle = document.querySelector('.footer__form-title');
-      footerFormTitle.textContent = 'Ваша заявка успешно отправлена';
-      const footerText = document.querySelector('.footer__text');
-      footerText.textContent = 'Ваша заявка успешно отправлена';
-      footerText.style.border = '3px solid red';
-      footerText.style.paddingLeft = '20px';
-      footerText.style.paddingRight = '20px';
-      footerText.style.paddingTop = '10px';
-      footerText.style.paddingBottom = '10px';
-      document.querySelector('.footer__input-wrap').remove();
+    fetchRequest('https://jsonplaceholder.typicode.com/posts', {
+      methed: 'post',
+      body: {
+        phone: footerForm.footerPhone.value,
+      },
+      callback(err, data) {
+        if (err) {
+          footerForm.textContent = err;
+        }
+        else {
+          const footerFormTitle = document.querySelector('.footer__form-title');
+          footerFormTitle.textContent = 'Ваша заявка успешно отправлена';
+          const footerText = document.querySelector('.footer__text');
+          footerText.textContent = 'Ваша заявка успешно отправлена';
+          footerText.style.border = '3px solid red';
+          footerText.style.paddingLeft = '20px';
+          footerText.style.paddingRight = '20px';
+          footerText.style.paddingTop = '10px';
+          footerText.style.paddingBottom = '10px';
+          document.querySelector('.footer__input-wrap').remove();
+        }
+      },
+      headers: { 'Content-Type': 'application/json' },
     });
     e.target.reset();
   });
