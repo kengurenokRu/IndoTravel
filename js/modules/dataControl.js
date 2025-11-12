@@ -10,25 +10,33 @@ const form = document.querySelector('.reservation__form');
 const footerForm = document.querySelector('.footer__form');
 
 const httpRequest = (URL, { methed = 'GET', callback, body = {}, headers }) => {
-  const xhr = new XMLHttpRequest();
-  xhr.open(methed, URL);
-console.log(methed);
-  if (headers) {
-    for (const [key, value] of Object.entries(headers)) {
-      xhr.setRequestHeader(key, value);
-    } 
+  try {
+    const xhr = new XMLHttpRequest();
+    xhr.open(methed, URL);
+    if (headers) {
+      for (const [key, value] of Object.entries(headers)) {
+        xhr.setRequestHeader(key, value);
+      }
+    }
+
+    xhr.addEventListener('load', () => {
+      if (xhr.status < 200 || xhr.status >= 300) {
+        callback(new Error(xhr.status), xhr.response);
+        return;
+      }
+      const data = JSON.parse(xhr.response);
+      if (callback) callback(data);
+    });
+    xhr.addEventListener('error', () => {
+      callback(new Error(xhr.status), xhr.response);
+    });
+    console.log(body);
+
+    xhr.send(JSON.stringify(body));
   }
-
-  xhr.addEventListener('load', () => {
-    const data = JSON.parse(xhr.response);
-    if (callback) callback(data);
-  });
-  xhr.addEventListener('error', () => {
-    console.log('error');
-  });
-  console.log(body);
-
-  xhr.send(JSON.stringify(body));
+  catch (err) {
+    callback(new Error(err));
+  }
 };
 
 
@@ -136,10 +144,15 @@ export const renderControl = async () => {
         name: form.name.value,
         phone: form.phone.value,
       },
-      callback(data) {
-        form.textContent = `Заявка принята. Номер заявки ${data.id}`;
+      callback(err, data) {
+        if (err) {
+          form.textContent = err;
+        }
+        else {
+          form.textContent = `Заявка принята. Номер заявки ${data.id}`;
+        }
       },
-      headers: {'Content-Type': 'application/json'},
+      headers: { 'Content-Type': 'application/json' },
     });
     /*sendData({
       date: form.dates.value,
@@ -171,7 +184,6 @@ export const renderControl = async () => {
     });
     e.target.reset();
   });
-
 }
 
 
