@@ -1,9 +1,20 @@
 import { controlTimer, plagins } from './modules/timer.js';
 import { renderData, renderControl } from './modules/dataControl.js';
-
+import { formControl } from './modules/formControl.js';
+import {createForms} from './modules/createElements.js';
 {
     const init = () => {  
-    if (plagins()) {
+      const body = document.querySelector('body');
+      const reservationData = document.querySelector('.reservation__data');
+      const reservationPrice = document.querySelector('.reservation__price');
+      const [formModalNo, formModalOk] = createForms(body);
+      const buttonModalNo = document.querySelector('.buttonModalNo');
+      const buttonModalOk = document.getElementsByClassName('buttonModalOk')[0];
+      renderData();
+      renderControl(formModalNo, formModalOk, reservationData, reservationPrice);  
+      formControl(buttonModalNo, buttonModalOk, formModalNo, formModalOk);
+      
+    if (plagins()) {      
       const timer = document.querySelector('.timer');
       const deadline = timer.dataset.deadline;
       const timerCountDays = document.querySelector('.timer__count_days');
@@ -27,7 +38,8 @@ import { renderData, renderControl } from './modules/dataControl.js';
     };
     
   }
-  renderData();
-  renderControl();
+     
+
+  
   window.timer = init;
 }

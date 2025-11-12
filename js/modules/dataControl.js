@@ -2,6 +2,7 @@ import { createOption } from './createElements.js';
 import declension from './declension.js';
 const { getDeclension } = declension;
 
+
 const tourDate = document.querySelector('#tour__date');
 const reservationDate = document.querySelector('#reservation__date');
 const selectData = document.querySelectorAll('[name="dates"]');
@@ -41,7 +42,6 @@ const fetchRequest = async (url, { method = 'GET', callback, body, headers }) =>
     const options = {method, };
     if (body) options.body = JSON.stringify(body);    
     if (headers) options.headers = headers;
-    console.log(options);
     const response = await fetch(url, options);
     if (response.ok) {
       const data = await response.json();
@@ -78,7 +78,7 @@ export const renderData = async () => {
   renderOptions(reservationDate, 'tour__option', 'Дата путешествия');
 };
 
-export const renderControl = async () => {
+export const renderControl = async (formModalNo, formModalOk, reservationData, reservationPrice) => {
   const data = await loadData();
 
   selectData.forEach(el => {
@@ -145,10 +145,13 @@ export const renderControl = async () => {
       },
       callback(err, data) {
         if (err) {
-          form.textContent = err;
+          formModalNo.style.display = 'block';
+          return;
         }
         else {
-          form.textContent = `Заявка принята. Номер заявки ${data.id}`;
+          formModalOk.style.display = 'block';
+          reservationData.textContent = '';
+          reservationPrice.textContent = '';
         }
       },
       headers: { 'Content-Type': 'application/json' },

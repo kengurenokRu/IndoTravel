@@ -4,7 +4,7 @@ const createSpan = (classList) => {
   return span;
 }
 
-const createParagraph = (textContent, classList) => {
+export const createParagraph = (textContent, classList) => {
   const p = document.createElement('p');
   p.classList = classList;
   p.textContent = textContent;
@@ -19,6 +19,26 @@ export const createOption = (value, textContent, classList) => {
   return option;
 }
 
+export const createBlock = (classList) => {
+  const div = document.createElement('div');
+  div.classList = classList;
+  return div;
+}
+
+export const createTitle = (textContent, classList) => {
+  const h2 = document.createElement('h2');
+  h2.classList = classList;
+  h2.textContent = textContent;
+  return h2;
+}
+
+export const createButton = (textContent, classList) => {
+  const button = document.createElement('button');
+  button.classList = classList;
+  button.textContent = textContent;
+  return button;
+}
+
 
 export const createTimerBlock = (container) => {
   const title = createParagraph('До конца акции осталось:', 'timer__title');
@@ -29,7 +49,7 @@ export const createTimerBlock = (container) => {
   const timerItemHours = createParagraph('', 'timer__item timer__item_hours');
   const timerCountHours = createSpan('timer__count timer__count_hours');
   const timerUnitsHours = createSpan('timer__units timer__units_hours');
-  timerItemHours.append(timerCountHours,timerUnitsHours);
+  timerItemHours.append(timerCountHours, timerUnitsHours);
   const timerItemMinutes = createParagraph('', 'timer__item timer__item_minutes');
   const timerCountMinutes = createSpan('timer__count timer__count_minutes');
   const timerUnitsMinutes = createSpan('timer__units timer__units_minutes');
@@ -37,4 +57,29 @@ export const createTimerBlock = (container) => {
   container.prepend(title, timerItemDays, timerItemHours, timerItemMinutes);
   container.classList.add('timer');
 }
+
+const createFormModal = (title, textContent, textButton='') => {
+  const overlay = createBlock('overlay');
+  const modalForm = createBlock('overlayModal modal');
+  overlay.append(modalForm);
+  const titleModal = createTitle(title, 'titleModal');
+  const text = createParagraph(textContent, 'textModal');
+  let button;
+  if (textButton !== '')
+    button = createButton(textButton, 'button buttonModal buttonModalNo');
+  else
+    button = createButton('', 'buttonModalOk buttonModal');
+  modalForm.append(titleModal, text, button);
+  return overlay;
+}
+
+export const createForms = () => {
+  const body = document.querySelector('body');
+  const formModalNo = createFormModal('Упс... Что-то пошло не так', 'Не удалось отправить заявку. Пожалуйста, повторите отправку еще раз', 'Забронировать');
+  const formModalOk = createFormModal('Ваша заявка успешно отправена', 'Наши менеджеры свяжутся с вами в течении 3-х рабочих дней');
+  body.append(formModalNo, formModalOk);
+  return [formModalNo, formModalOk];
+};
+
+
 
