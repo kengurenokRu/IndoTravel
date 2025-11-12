@@ -162,7 +162,7 @@ export const renderControl = async (formModalNo, formModalOk, reservationData, r
   footerForm.addEventListener("submit", (e) => {
     e.preventDefault();
     fetchRequest('https://jsonplaceholder.typicode.com/posts', {
-      methed: 'post',
+      method: 'post',
       body: {
         phone: footerForm.footerPhone.value,
       },
@@ -174,7 +174,7 @@ export const renderControl = async (formModalNo, formModalOk, reservationData, r
           const footerFormTitle = document.querySelector('.footer__form-title');
           footerFormTitle.textContent = 'Ваша заявка успешно отправлена';
           const footerText = document.querySelector('.footer__text');
-          footerText.textContent = 'Ваша заявка успешно отправлена';
+          footerText.textContent = 'Наши менеджеры свяжутся с Вами в течении 3-х рабочих дней';
           footerText.style.border = '3px solid red';
           footerText.style.paddingLeft = '20px';
           footerText.style.paddingRight = '20px';
