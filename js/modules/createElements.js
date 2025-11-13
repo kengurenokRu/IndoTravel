@@ -58,28 +58,28 @@ export const createTimerBlock = (container) => {
   container.classList.add('timer');
 }
 
-const createFormModal = (title, textContent, textButton='') => {
-  const overlay = createBlock('overlay');
-  const modalForm = createBlock('overlayModal modal');
-  overlay.append(modalForm);
-  const titleModal = createTitle(title, 'titleModal');
-  const text = createParagraph(textContent, 'textModal');
-  let button;
-  if (textButton !== '')
-    button = createButton(textButton, 'button buttonModal buttonModalNo');
-  else
-    button = createButton('', 'buttonModalOk buttonModal');
-  modalForm.append(titleModal, text, button);
+export const createFormModal = () => {
+  const overlay = createBlock('overlay overlay_confirm');
+  const modal = createBlock('modal');
+  overlay.append(modal);
+  const modalTitle = createTitle('Подтверждение заявки', 'modal__title');
+  modal.append(modalTitle);
+  let modalText = createParagraph('Бронирование путешествия в Индию на 6 человек', 'modal__text');
+  modal.append(modalText);
+  modalText = createParagraph('В даты: 24 ноября - 7 декабря', 'modal__text');
+  modal.append(modalText);
+  modalText = createParagraph('Стоимость тура 459 588₽', 'modal__text');
+  modal.append(modalText);
+  const modalButton = createBlock('modal__button');
+  let button = createButton('Подтверждаю', 'modal__btn modal__btn_confirm');
+  modalButton.append(button);
+  button = createButton('Изменить данные', 'modal__btn modal__btn_edit');
+  modalButton.append(button);
+  modal.append(modalButton);
   return overlay;
 }
 
-export const createForms = () => {
-  const body = document.querySelector('body');
-  const formModalNo = createFormModal('Упс... Что-то пошло не так', 'Не удалось отправить заявку. Пожалуйста, повторите отправку еще раз', 'Забронировать');
-  const formModalOk = createFormModal('Ваша заявка успешно отправена', 'Наши менеджеры свяжутся с вами в течении 3-х рабочих дней');
-  body.append(formModalNo, formModalOk);
-  return [formModalNo, formModalOk];
-};
+
 
 
 

@@ -38,8 +38,6 @@ import {createForms} from './modules/createElements.js';
     };
     
   }
-     
-
   
   window.timer = init;
 }
