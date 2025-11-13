@@ -1,5 +1,7 @@
 import { createOption } from './createElements.js';
 import declension from './declension.js';
+import loadStyle from './loadStyle.js';
+import { createFormModal } from './modal.js';
 const { getDeclension } = declension;
 
 
@@ -37,10 +39,10 @@ const httpRequest = (URL, { method = 'GET', callback, body = {}, headers }) => {
   }
 };
 
-const fetchRequest = async (url, { method = 'GET', callback, body, headers }) => {
-  try {    
-    const options = {method, };
-    if (body) options.body = JSON.stringify(body);    
+export const fetchRequest = async (url, { method = 'GET', callback, body, headers }) => {
+  try {
+    const options = { method, };
+    if (body) options.body = JSON.stringify(body);
     if (headers) options.headers = headers;
     const response = await fetch(url, options);
     if (response.ok) {
@@ -78,7 +80,7 @@ export const renderData = async () => {
   renderOptions(reservationDate, 'tour__option', 'Дата путешествия');
 };
 
-export const renderControl = async (formModalNo, formModalOk, reservationData, reservationPrice) => {
+export const renderControl = async () => {
   const data = await loadData();
 
   selectData.forEach(el => {
@@ -113,50 +115,64 @@ export const renderControl = async (formModalNo, formModalOk, reservationData, r
     return `${dates[0]} ${months[dates[1] - 1]}`;
   };
 
+  const getTextDate = (reservationDate, reservationCount) => {
+    const temp = reservationDate.split(' - ');
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].date === reservationDate) {
+        return [`${getDataStr(temp[0])} - ${getDataStr(temp[1])}`,
+        `${reservationCount} ${getDeclension(Number.parseInt(reservationCount), ['человек', 'человека', 'человек'])}`,
+        `${(data[i].price * reservationCount).toLocaleString('ru')} ₽`];
+      }
+    }    
+    return [];
+  }
+
   selectPeople.forEach(el => {
     el.addEventListener('change', (e) => {
       if (e.target.classList.contains('reservation__select')) {
         const reservationDataText = document.querySelector('.reservation__data');
         const reservationPriceText = document.querySelector('.reservation__price');
-        const temp = reservationDate.value.split(' - ');
-        data.map(item => {
-          if (item.date === reservationDate.value) {
-            reservationDataText.textContent = `${getDataStr(temp[0])} - ${getDataStr(temp[1])}, 
-              ${e.target.value} 
-              ${getDeclension(Number.parseInt(e.target.value), ['человек', 'человека', 'человек'])}`;
-            reservationPriceText.textContent = `${(item.price * e.target.value).toLocaleString('ru')} ₽`;
-          }
-        });
+        const textDate = getTextDate(form.dates.value, form.people.value);
+        reservationDataText.textContent = `${textDate[0]}, ${textDate[1]}`;
+        reservationPriceText.textContent = `${textDate[2]} ₽`;
       }
     });
-  });
+  }); 
 
-
-
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    fetchRequest('https://jsonplaceholder.typicode.com/posts', {
-      method: 'post',
-      body: {
-        date: form.dates.value,
-        people: form.people.value,
-        name: form.name.value,
-        phone: form.phone.value,
-      },
-      callback(err, data) {
-        if (err) {
-          formModalNo.style.display = 'block';
-          return;
-        }
-        else {
-          formModalOk.style.display = 'block';
-          reservationData.textContent = '';
-          reservationPrice.textContent = '';
-        }
-      },
-      headers: { 'Content-Type': 'application/json' },
-    });
-    e.target.reset();
+    const body = document.querySelector('body');
+    const textDate = getTextDate(form.dates.value, form.people.value);
+    await loadStyle('css/modal.css');
+    const formModal = await createFormModal(body, textDate[0], textDate[1], textDate[2]);
+    if (formModal) {
+      fetchRequest('https://jsonplaceholder.typicode.com/posts', {
+        method: 'post',
+        body: {
+          date: form.dates.value,
+          people: form.people.value,
+          name: form.name.value,
+          phone: form.phone.value,
+        },
+        callback(err, data) {
+          if (err) {
+            return;
+          }
+          else {
+            const reservationDataText = document.querySelector('.reservation__data');
+            const reservationPriceText = document.querySelector('.reservation__price');
+            reservationDataText.textContent = '';
+            reservationPriceText.textContent = '';
+            for (let i = 0; i < form.elements.length; i++) {
+              form.elements[i].disabled = true;
+            }
+            form.reset();
+          }
+        },
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
   });
 
   footerForm.addEventListener("submit", (e) => {

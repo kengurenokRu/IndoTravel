@@ -58,26 +58,7 @@ export const createTimerBlock = (container) => {
   container.classList.add('timer');
 }
 
-export const createFormModal = () => {
-  const overlay = createBlock('overlay overlay_confirm');
-  const modal = createBlock('modal');
-  overlay.append(modal);
-  const modalTitle = createTitle('Подтверждение заявки', 'modal__title');
-  modal.append(modalTitle);
-  let modalText = createParagraph('Бронирование путешествия в Индию на 6 человек', 'modal__text');
-  modal.append(modalText);
-  modalText = createParagraph('В даты: 24 ноября - 7 декабря', 'modal__text');
-  modal.append(modalText);
-  modalText = createParagraph('Стоимость тура 459 588₽', 'modal__text');
-  modal.append(modalText);
-  const modalButton = createBlock('modal__button');
-  let button = createButton('Подтверждаю', 'modal__btn modal__btn_confirm');
-  modalButton.append(button);
-  button = createButton('Изменить данные', 'modal__btn modal__btn_edit');
-  modalButton.append(button);
-  modal.append(modalButton);
-  return overlay;
-}
+
 
 
 
