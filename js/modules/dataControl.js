@@ -175,6 +175,14 @@ export const renderControl = async () => {
 
   });
 
+  form.addEventListener("input", async (e) => {
+    if (e.target == form.name)
+    {
+      const reg = /[^А-Яа-яЁё\s]+/;      
+      e.target.value = e.target.value.replace(reg, '');
+    }   
+  });
+
   footerForm.addEventListener("submit", (e) => {
     e.preventDefault();
     fetchRequest('https://jsonplaceholder.typicode.com/posts', {
