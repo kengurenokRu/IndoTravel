@@ -123,7 +123,7 @@ export const renderControl = async () => {
         `${reservationCount} ${getDeclension(Number.parseInt(reservationCount), ['человек', 'человека', 'человек'])}`,
         `${(data[i].price * reservationCount).toLocaleString('ru')} ₽`];
       }
-    }    
+    }
     return [];
   }
 
@@ -137,7 +137,7 @@ export const renderControl = async () => {
         reservationPriceText.textContent = `${textDate[2]} ₽`;
       }
     });
-  }); 
+  });
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -176,11 +176,22 @@ export const renderControl = async () => {
   });
 
   form.addEventListener("input", async (e) => {
-    if (e.target == form.name)
-    {
-      const reg = /[^А-Яа-яЁё\s]+/;      
+    if (e.target == form.name) {
+      const reg = /[^А-Яа-яЁё\s]+/;
       e.target.value = e.target.value.replace(reg, '');
-    }   
+    } else
+      if (e.target == form.phone) {
+        const reg = /[^\+\d+]/;
+        e.target.value = e.target.value.replace(reg, '');
+        e.target.value = e.target.value.replace(/\+/g, (char, index) => {
+          if (index === 0) return char;
+          return '';
+        });
+        e.target.value = e.target.value.replace(/\d/g, (number, index) => {
+          if (index === 0) return '';
+          return number;
+        });
+      }
   });
 
   footerForm.addEventListener("submit", (e) => {
