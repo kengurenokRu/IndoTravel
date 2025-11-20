@@ -141,46 +141,47 @@ export const renderControl = async () => {
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const body = document.querySelector('body');
-    const textDate = getTextDate(form.dates.value, form.people.value);
-    await loadStyle('css/modal.css');
-    const formModal = await createFormModal(body, textDate[0], textDate[1], textDate[2]);
-    if (formModal) {
-      fetchRequest('https://jsonplaceholder.typicode.com/posts', {
-        method: 'post',
-        body: {
-          date: form.dates.value,
-          people: form.people.value,
-          name: form.name.value,
-          phone: form.phone.value,
-        },
-        callback(err, data) {
-          if (err) {
-            return;
-          }
-          else {
-            const reservationDataText = document.querySelector('.reservation__data');
-            const reservationPriceText = document.querySelector('.reservation__price');
-            reservationDataText.textContent = '';
-            reservationPriceText.textContent = '';
-            for (let i = 0; i < form.elements.length; i++) {
-              form.elements[i].disabled = true;
+    const reg = /[а-яёА-ЯЁ]+/g;
+    if (form.name.value.match(reg).length >= 3) {
+      const body = document.querySelector('body');
+      const textDate = getTextDate(form.dates.value, form.people.value);
+      await loadStyle('css/modal.css');
+      const formModal = await createFormModal(body, textDate[0], textDate[1], textDate[2]);
+      if (formModal) {
+        fetchRequest('https://jsonplaceholder.typicode.com/posts', {
+          method: 'post',
+          body: {
+            date: form.dates.value,
+            people: form.people.value,
+            name: form.name.value,
+            phone: form.phone.value,
+          },
+          callback(err, data) {
+            if (err) {
+              return;
             }
-            form.reset();
-          }
-        },
-        headers: { 'Content-Type': 'application/json' },
-      });
+            else {
+              const reservationDataText = document.querySelector('.reservation__data');
+              const reservationPriceText = document.querySelector('.reservation__price');
+              reservationDataText.textContent = '';
+              reservationPriceText.textContent = '';
+              for (let i = 0; i < form.elements.length; i++) {
+                form.elements[i].disabled = true;
+              }
+              form.reset();
+            }
+          },
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
     }
-
-  });
+    });
 
   form.addEventListener("input", async (e) => {
     if (e.target == form.name) {
-      const reg = /[^А-Яа-яЁё\s]+/;
+      const reg = /[^а-яёА-ЯЁ\s]+/;
       e.target.value = e.target.value.replace(reg, '');
-    } else
-      if (e.target == form.phone) {
+    } else if (e.target == form.phone) {
         const reg = /[^\+\d+]/;
         e.target.value = e.target.value.replace(reg, '');
         e.target.value = e.target.value.replace(/\+/g, (char, index) => {
