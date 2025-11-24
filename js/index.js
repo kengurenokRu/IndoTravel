@@ -30,6 +30,19 @@ import { renderData, renderControl } from './modules/dataControl.js';
     const reservationPhone = document.querySelector('#reservation__phone');
     const telMask = new Inputmask('+7 (999) | 999 - 99 - 99');
     telMask.mask(reservationPhone);
+
+    const justValidate = new JustValidate('.reservation__form');
+    justValidate
+    .addField('#reservation__date', [
+      {rule: 'required',
+        errorMessage: 'Укажите даты путешествия',
+       }
+    ])
+    .addField('#reservation__people', [
+      {rule: 'required',
+        errorMessage: 'Укажите количество человек',
+       }
+    ]);
   }
   
   window.timer = init;
