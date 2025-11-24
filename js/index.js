@@ -8,6 +8,21 @@ import { renderData, renderControl } from './modules/dataControl.js';
     const telMask = new Inputmask('+7(999)999-99-99');
     telMask.mask(reservationPhone);
 
+
+    const swiper = new Swiper('.swiper', {
+      slidesPerView: 1.3,
+      direction: 'horizontal',
+      spaceBetween:0,
+      loop: true,            
+      navigation: {
+        nextEl: '.album__right',
+        prevEl: '.album__left',
+      },   
+      mousewheel: true,
+      keyboard: true,
+    });
+
+
     renderData();
     renderControl();
     if (plagins()) {
