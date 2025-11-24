@@ -11,6 +11,7 @@ const selectData = document.querySelectorAll('[name="dates"]');
 const selectPeople = document.querySelectorAll('[name="people"]');
 const form = document.querySelector('.reservation__form');
 const footerForm = document.querySelector('.footer__form');
+const reservationPhone = document.querySelector('#reservation__phone');
 
 const httpRequest = (URL, { method = 'GET', callback, body = {}, headers }) => {
   try {
@@ -82,6 +83,82 @@ export const renderData = async () => {
 
 export const renderControl = async () => {
   const data = await loadData();
+  
+  const justValidate = new JustValidate('.reservation__form');
+  justValidate
+    .addField('#reservation__date', [
+      {
+        rule: 'required',
+        errorMessage: 'Укажите даты путешествия',
+      }
+    ])
+    .addField('#reservation__people', [
+      {
+        rule: 'required',
+        errorMessage: 'Укажите количество человек',
+      }
+    ])
+    .addField('#reservation__name', [
+      {
+        rule: 'required',
+        errorMessage: 'Укажите ФИО',
+      },
+      {
+        rule: 'minLength',
+        value: 3,
+        errorMessage: 'Длина ФИО должна быть больше 3 символов',
+      }
+    ])
+    .addField('#reservation__phone', [
+      {
+        rule: 'required',
+        errorMessage: 'Укажите телефон',
+      },
+      {
+        validator(value) {
+          const tel = reservationPhone.inputmask.unmaskedvalue();
+          return !!(Number(tel) && tel.length === 10);
+        },
+        errorMessage: 'Телефон не корректный',
+      }
+    ])
+    .onSuccess(async (event) => {
+      const reg = /[а-яёА-ЯЁ]+/g;
+      if (form.name.value.match(reg).length >= 3) {
+        const body = document.querySelector('body');
+        const textDate = getTextDate(form.dates.value, form.people.value);
+        await loadStyle('css/modal.css');
+        const formModal = await createFormModal(body, textDate[0], textDate[1], textDate[2]);
+        if (formModal) {
+          fetchRequest('https://jsonplaceholder.typicode.com/posts', {
+            method: 'post',
+            body: {
+              date: form.dates.value,
+              people: form.people.value,
+              name: form.name.value,
+              phone: form.phone.value,
+            },
+            callback(err, data) {
+              if (err) {
+                return;
+              }
+              else {
+                const reservationDataText = document.querySelector('.reservation__data');
+                const reservationPriceText = document.querySelector('.reservation__price');
+                reservationDataText.textContent = '';
+                reservationPriceText.textContent = '';
+                for (let i = 0; i < form.elements.length; i++) {
+                  form.elements[i].disabled = true;
+                }
+                form.reset();
+              }
+            },
+            headers: { 'Content-Type': 'application/json' },
+          });
+        }
+      }
+    });
+
 
   selectData.forEach(el => {
     el.addEventListener('change', (e) => {
@@ -139,61 +216,28 @@ export const renderControl = async () => {
     });
   });
 
-  form.addEventListener("submit", async (e) => {
+  form.addEventListener("submit", (e) => {
     e.preventDefault();
-    const reg = /[а-яёА-ЯЁ]+/g;
-    if (form.name.value.match(reg).length >= 3) {
-      const body = document.querySelector('body');
-      const textDate = getTextDate(form.dates.value, form.people.value);
-      await loadStyle('css/modal.css');
-      const formModal = await createFormModal(body, textDate[0], textDate[1], textDate[2]);
-      if (formModal) {
-        fetchRequest('https://jsonplaceholder.typicode.com/posts', {
-          method: 'post',
-          body: {
-            date: form.dates.value,
-            people: form.people.value,
-            name: form.name.value,
-            phone: form.phone.value,
-          },
-          callback(err, data) {
-            if (err) {
-              return;
-            }
-            else {
-              const reservationDataText = document.querySelector('.reservation__data');
-              const reservationPriceText = document.querySelector('.reservation__price');
-              reservationDataText.textContent = '';
-              reservationPriceText.textContent = '';
-              for (let i = 0; i < form.elements.length; i++) {
-                form.elements[i].disabled = true;
-              }
-              form.reset();
-            }
-          },
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
-    }
-    });
+  });
 
   form.addEventListener("input", async (e) => {
     if (e.target == form.name) {
       const reg = /[^а-яёА-ЯЁ\s]+/;
       e.target.value = e.target.value.replace(reg, '');
     } else if (e.target == form.phone) {
-        const reg = /[^\+\d+]/;
-        e.target.value = e.target.value.replace(reg, '');
-        e.target.value = e.target.value.replace(/\+/g, (char, index) => {
-          if (index === 0) return char;
-          return '';
-        });
-        e.target.value = e.target.value.replace(/\d/g, (number, index) => {
-          if (index === 0) return '';
-          return number;
-        });
-      }
+      const reg = /[^\+\d+]/;
+      e.target.value = e.target.value.replace(reg, '');
+      e.target.value = e.target.value.replace(/\+/g, (char, index) => {
+        if (index === 0) return char;
+        return '';
+      });
+      e.target.value = e.target.value.replace(/\d/g, (number, index) => {
+        if (index === 0) return '';
+        return number;
+      });
+    }
   });
+
 
   footerForm.addEventListener("submit", (e) => {
     e.preventDefault();

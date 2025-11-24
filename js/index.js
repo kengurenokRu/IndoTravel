@@ -2,10 +2,15 @@ import { controlTimer, plagins } from './modules/timer.js';
 import { renderData, renderControl } from './modules/dataControl.js';
 
 {
-    const init = () => {        
-      renderData();
-      renderControl();  
-    if (plagins()) {      
+  const init = () => {
+
+    const reservationPhone = document.querySelector('#reservation__phone');
+    const telMask = new Inputmask('+7(999)999-99-99');
+    telMask.mask(reservationPhone);
+
+    renderData();
+    renderControl();
+    if (plagins()) {
       const timer = document.querySelector('.timer');
       const deadline = timer.dataset.deadline;
       const timerCountDays = document.querySelector('.timer__count_days');
@@ -27,23 +32,10 @@ import { renderData, renderControl } from './modules/dataControl.js';
         heroText,
         heroTimer);
     };
-    const reservationPhone = document.querySelector('#reservation__phone');
-    const telMask = new Inputmask('+7 (999) | 999 - 99 - 99');
-    telMask.mask(reservationPhone);
+    
 
-    const justValidate = new JustValidate('.reservation__form');
-    justValidate
-    .addField('#reservation__date', [
-      {rule: 'required',
-        errorMessage: 'Укажите даты путешествия',
-       }
-    ])
-    .addField('#reservation__people', [
-      {rule: 'required',
-        errorMessage: 'Укажите количество человек',
-       }
-    ]);
+    
   }
-  
+
   window.timer = init;
 }
